@@ -1,0 +1,26 @@
+# Input source
+input:
+  mode: "csv"                 # "csv" for testing; later "pipe" or "http" etc.
+  file: "data/live_losses.csv"     # path used when mode = csv
+  timestamp_column: "ts"      # must exist in CSV
+  loss_column: "reconstruction_loss"
+
+# Detection settings
+detection:
+  strategy: "hybrid"          # "fixed" | "adaptive" | "hybrid"
+  fixed_threshold: 0.15       # if loss > this → anomaly
+  window_size: 50             # rolling window for adaptive stats
+  z_limit: 2.0                # spike if loss > (rolling_mean + z_limit * rolling_std)
+  min_warmup: 20              # don’t alert until we’ve seen this many points
+
+# Alerting
+alerting:
+  slack:
+    enabled: true
+    channel_hint: "#alerts"   # only a hint shown in message
+  debounce_seconds: 120       # don’t send the same alert type again too soon
+
+# Labels (show up in alert)
+labels:
+  service: "swiggy-model"
+  env: "dev"
